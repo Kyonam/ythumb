@@ -3,8 +3,11 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Navbar() {
+  const { user, signOut } = useAuth();
+
   return (
     <nav 
       style={{
@@ -24,17 +27,19 @@ export default function Navbar() {
     >
       {/* Left: Logo + Text */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div style={{ position: 'relative', width: '32px', height: '32px' }}>
-          <Image 
-            src="/ythumb.png" 
-            alt="ythumb AI Logo" 
-            fill
-            style={{ objectFit: 'contain' }}
-          />
-        </div>
-        <span style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
-          ythumb AI
-        </span>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', color: 'inherit' }}>
+          <div style={{ position: 'relative', width: '32px', height: '32px' }}>
+            <Image 
+              src="/ythumb.png" 
+              alt="ythumb AI Logo" 
+              fill
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+          <span style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
+            ythumb AI
+          </span>
+        </Link>
       </div>
 
       {/* Center: Navigation Links */}
@@ -50,24 +55,48 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* Right: Get Started Button */}
-      <div>
-        <Link 
-          href="/signup" 
-          style={{
-            padding: '0.6rem 1.2rem',
-            borderRadius: '9999px',
-            background: 'white',
-            color: 'black',
-            fontWeight: 600,
-            fontSize: '0.85rem',
-            textDecoration: 'none',
-            boxShadow: '0 4px 20px rgba(255, 255, 255, 0.2)',
-            transition: 'transform 0.2s, background 0.2s',
-          }}
-        >
-          Get Started
-        </Link>
+      {/* Right: Auth Button */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        {user ? (
+          <>
+            <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
+              {user.email}
+            </span>
+            <button 
+              onClick={() => signOut()}
+              style={{
+                padding: '0.6rem 1.2rem',
+                borderRadius: '9999px',
+                background: 'rgba(255, 255, 255, 0.1)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                transition: 'background 0.2s',
+              }}
+            >
+              Sign Out
+            </button>
+          </>
+        ) : (
+          <Link 
+            href="/auth" 
+            style={{
+              padding: '0.6rem 1.2rem',
+              borderRadius: '9999px',
+              background: 'white',
+              color: 'black',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              textDecoration: 'none',
+              boxShadow: '0 4px 20px rgba(255, 255, 255, 0.2)',
+              transition: 'transform 0.2s, background 0.2s',
+            }}
+          >
+            Get Started
+          </Link>
+        )}
       </div>
     </nav>
   );
