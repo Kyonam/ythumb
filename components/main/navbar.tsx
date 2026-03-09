@@ -5,8 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 
+import { usePathname } from 'next/navigation';
+
 export default function Navbar() {
   const { user, signOut } = useAuth();
+  const pathname = usePathname();
+  const isDashboard = pathname === '/dashboard';
 
   return (
     <nav 
@@ -20,9 +24,11 @@ export default function Navbar() {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '1.5rem 4rem',
-        backgroundColor: 'transparent',
+        backgroundColor: isDashboard ? 'rgba(24, 24, 24, 0.8)' : 'transparent',
+        backdropFilter: isDashboard ? 'blur(10px)' : 'none',
         color: 'white',
         fontFamily: "'Space Grotesk', sans-serif",
+        borderBottom: isDashboard ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
       }}
     >
       {/* Left: Logo + Text */}
@@ -44,21 +50,45 @@ export default function Navbar() {
 
       {/* Center: Navigation Links */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-        <Link href="#features" style={{ fontSize: '0.9rem', fontWeight: 500, opacity: 0.8, textDecoration: 'none', color: 'inherit', transition: 'opacity 0.2s' }}>
-          Features
-        </Link>
-        <Link href="#pricing" style={{ fontSize: '0.9rem', fontWeight: 500, opacity: 0.8, textDecoration: 'none', color: 'inherit', transition: 'opacity 0.2s' }}>
-          Pricing
-        </Link>
-        <Link href="#contact" style={{ fontSize: '0.9rem', fontWeight: 500, opacity: 0.8, textDecoration: 'none', color: 'inherit', transition: 'opacity 0.2s' }}>
-          Contact
-        </Link>
+        {!isDashboard ? (
+          <>
+            <Link href="#features" style={{ fontSize: '0.9rem', fontWeight: 500, opacity: 0.8, textDecoration: 'none', color: 'inherit', transition: 'opacity 0.2s' }}>
+              Features
+            </Link>
+            <Link href="#pricing" style={{ fontSize: '0.9rem', fontWeight: 500, opacity: 0.8, textDecoration: 'none', color: 'inherit', transition: 'opacity 0.2s' }}>
+              Pricing
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link href="/dashboard" style={{ fontSize: '0.9rem', fontWeight: 600, opacity: 1, textDecoration: 'none', color: 'inherit' }}>
+              Dashboard
+            </Link>
+            <Link href="/dashboard/history" style={{ fontSize: '0.9rem', fontWeight: 500, opacity: 0.6, textDecoration: 'none', color: 'inherit' }}>
+              History
+            </Link>
+          </>
+        )}
       </div>
 
       {/* Right: Auth Button */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {user ? (
           <>
+            {!isDashboard && (
+              <Link 
+                href="/dashboard"
+                style={{
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  color: 'white',
+                  textDecoration: 'none',
+                  marginRight: '0.5rem'
+                }}
+              >
+                Dashboard
+              </Link>
+            )}
             <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
               {user.email}
             </span>
